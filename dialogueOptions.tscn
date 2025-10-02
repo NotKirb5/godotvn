@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://cyhlxticux378"]
+
+[ext_resource type="Script" uid="uid://cywhn8s5otgfb" path="res://addons/godotvn/dialogueOptions.gd" id="1_rymom"]
+
+[node name="dialogueOptions" type="Button" groups=["dialogueButtons"]]
+z_index = 50
+offset_right = 8.0
+offset_bottom = 8.0
+autowrap_mode = 3
+script = ExtResource("1_rymom")
+
+[node name="label" type="Label" parent="."]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 23.0
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]

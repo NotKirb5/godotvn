@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://dsy5ua21ufsiv"]
+
+[ext_resource type="Script" uid="uid://chlp60khcjguf" path="res://addons/godotvn/character.gd" id="1_qxfx4"]
+[ext_resource type="Texture2D" uid="uid://dy1j2eagussob" path="res://addons/godotvn/cafe.png" id="2_wsbmg"]
+
+[node name="Character" type="Node2D"]
+script = ExtResource("1_qxfx4")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_wsbmg")

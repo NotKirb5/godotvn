@@ -1,0 +1,36 @@
+[gd_scene load_steps=2 format=3 uid="uid://35mocwwmyjpp"]
+
+[ext_resource type="Script" uid="uid://c7x5mak281d8p" path="res://addons/godotvn/dialogueOverlay.gd" id="1_4bocn"]
+
+[node name="DialogueOverlay" type="CanvasLayer" groups=["overlay"]]
+script = ExtResource("1_4bocn")
+
+[node name="Panel" type="Panel" parent="."]
+
+[node name="dialogueBox" type="Panel" parent="."]
+self_modulate = Color(0.0001647997, 0.33428788, 0.9771181, 1)
+z_index = 10
+offset_right = 500.0
+offset_bottom = 500.0
+grow_horizontal = 2
+
+[node name="namelabel" type="Label" parent="dialogueBox"]
+layout_mode = 0
+offset_left = 18.0
+offset_right = 488.0
+offset_bottom = 55.0
+theme_override_font_sizes/font_size = 40
+text = "Character Name"
+
+[node name="dialoguelabel" type="Label" parent="dialogueBox"]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 57.0
+offset_right = 476.0
+offset_bottom = 476.0
+theme_override_font_sizes/font_size = 24
+text = "random text"
+autowrap_mode = 3
+
+[node name="textTimer" type="Timer" parent="."]
+one_shot = true
