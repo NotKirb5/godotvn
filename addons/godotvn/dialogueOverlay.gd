@@ -2,6 +2,8 @@ extends CanvasLayer
 
 
 @onready var panel = $Panel
+@onready var dpanel = $dialoguepanel
+@onready var btncontainer = $buttoncontainer
 @onready var dbox = $dialogueBox
 @onready var nlabel = $dialogueBox/namelabel
 @onready var dlabel = $dialogueBox/dialoguelabel
@@ -12,6 +14,9 @@ var index = 0
 var scene = {}
 var section = []
 var talking = false
+var waiting = false
+var selecting = false
+var new = false
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	dlabel.text = ''
@@ -21,12 +26,22 @@ func _ready() -> void:
 	dbox.set_size(Vector2(windowSize.x/1.5,windowSize.y/2.5))
 	dbox.global_position.y = windowSize.y - dbox.size.y
 	dbox.global_position.x = windowSize.x/2 - dbox.size.x/2
+	dpanel.set_size(Vector2(windowSize.x/1.5,windowSize.y/2.5))
+	dpanel.global_position.y = windowSize.y - dbox.size.y
+	dpanel.global_position.x = windowSize.x/2 - dbox.size.x/2
+	btncontainer.size = Vector2(windowSize.x/3, windowSize.y)
+	btncontainer.global_position = Vector2(windowSize.x/2 - btncontainer.size.x/2, 0)
+	nlabel.add_theme_font_size_override("font_size",dman.options['namefontsize'])
+	dlabel.add_theme_font_size_override("font_size",dman.options['dialoguefontsize'])
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if Input.is_action_just_pressed("ui_accept") and not talking:
+	if Input.is_action_just_released("ui_accept"):
+		new = false
+	if Input.is_action_just_pressed("ui_accept") and not talking and not waiting and not selecting:
 		index += 1
 		if index < len(section):
+			new = true
 			play(section[index])
 		else:
 			dman.sceneplaying = false
@@ -64,12 +79,20 @@ func play(line:String)->void:
 		dlabel.text = ''
 		for i in line:
 			dlabel.text = dlabel.text + i
+			var fastspeed = dman.options['fasttextspeed']
+			var normspeed = dman.options['textspeed']
 			#if you hold spacebar the text displays faster
-			if Input.is_action_pressed("ui_accept"):
-				textTimer.start(.01)
+			if Input.is_action_pressed("ui_accept") and not new:
+				
+				if fastspeed != 0:
+					
+					textTimer.start(fastspeed)
+					await textTimer.timeout
 			else:
-				textTimer.start(.05)
-			await textTimer.timeout
+				if  normspeed != 0:
+					
+					textTimer.start(normspeed)
+					await textTimer.timeout
 		talking = false
 
 func playscene(s:Dictionary)->void:
@@ -85,6 +108,7 @@ func playsection(s:Array)->void:
 
 func changebranch(branch:String)->void:
 	index = 0
+	selecting = false
 	for i in get_tree().get_nodes_in_group('dialogueButtons'):
 		i.queue_free()
 	playsection(scene[branch])
@@ -103,16 +127,45 @@ func exec(c,arg):
 			nextline()
 		'branch':
 			changebranch(arg[0])
+		'delete':
+			var chara = get_tree().get_first_node_in_group(arg[0])
+			chara.remove()
+			nextline()
+		'focus':
+			var chara = get_tree().get_first_node_in_group(arg[0])
+			chara.focus()
+			nextline()
+		'defocus':
+			var chara = get_tree().get_first_node_in_group(arg[0])
+			chara.defocus()
+			nextline()
+		'wait':
+			var t = Timer.new()
+			add_child(t)
+			t.start(float(arg[0]))
+			waiting = true
+			await t.timeout
+			t.queue_free()
+			waiting = false
+			nextline()
+		'move':
+			var chara = get_tree().get_first_node_in_group(arg[0])
+			chara.move(arg)
+			nextline()
+		'flip':
+			var chara = get_tree().get_first_node_in_group(arg[0])
+			chara.flipsprite()
 		'options':
 			# for every 2 text, route
 			var button = null
 			var buttons = []
 			var yoffset = 0
+			selecting = true
 			for i in arg:
 				if button == null:
 					var inst = dialoguebutton.instantiate()
 					var text = ' '.join(i.split('_'))
-					add_child(inst)
+					btncontainer.add_child(inst)
 					inst.settext(text)
 					
 					button = inst
@@ -123,7 +176,7 @@ func exec(c,arg):
 					button = null
 			var idex = 1
 			for b in buttons:
-				b.sety(len(buttons) + 1,idex)
+				#b.sety(len(buttons) + 1,idex)
 				idex += 1
 
 

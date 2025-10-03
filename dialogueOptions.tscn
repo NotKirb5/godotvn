@@ -4,6 +4,7 @@
 
 [node name="dialogueOptions" type="Button" groups=["dialogueButtons"]]
 z_index = 50
+custom_minimum_size = Vector2(0, 100)
 offset_right = 8.0
 offset_bottom = 8.0
 autowrap_mode = 3

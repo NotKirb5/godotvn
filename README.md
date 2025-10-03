@@ -11,4 +11,4 @@ Node Manager for dialogue in godot
 - more flexable positions
 - bug testing with diffrent window sizes
 - bug testing with load times
-
+- timed dialogue

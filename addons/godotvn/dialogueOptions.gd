@@ -11,11 +11,10 @@ func _process(delta: float) -> void:
 
 func settext(s:String)->void:
 	text = s
-	await resized
-	size = Vector2(window.x/3,window.y/9)
+	size = Vector2(window.x/3,window.y/3)
 	#pivot_offset = Vector2(size.x/2,size.y/2)
 	#await resized
-	global_position.x = window.x/2 - size.x/2
+	#global_position.x = window.x/2 - size.x/2
 
 func setroute(r:String)->void:
 	route = r
